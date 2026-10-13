@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+{% block title %}Detailed Result | TestFlow{% endblock %}
+{% block content %}
+<style>
+    @media print {
+        body { background: white !important; }
+        body * { visibility: hidden; }
+        .print-area, .print-area * { visibility: visible; }
+        .print-area { position: absolute; left: 0; top: 0; width: 100%; background:white; }
+        .no-print { display: none !important; }
+        .app-layout .content-wrapper { padding: 0 !important; overflow: visible !important; }
+        .card { box-shadow:none !important; border:1px solid #ccc !important; break-inside: avoid; }
+    }
+</style>
+
+<div class="print-area">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:2rem;" class="no-print">
+        <div>
+            <a href="{% url 'results' %}" style="display:inline-flex; align-items:center; gap:0.5rem; margin-bottom:1rem; color:var(--text-muted); font-size:0.95rem; font-weight:600; transition:var(--transition);" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-muted)'">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                Back to Attempts
+            </a>
+            <h1 style="font-size:2rem; font-weight:800; color:var(--text-main); margin-bottom:0.25rem;">Report Card</h1>
+            <p style="color:var(--text-muted); font-weight:500;">Review your answers and performance details.</p>
+        </div>
+        <button onclick="window.print()" class="btn btn-outline" style="background:var(--surface);">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:0.5rem;"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+            Print Report
+        </button>
+    </div>
+
+    <!-- Print Header (Hidden on screen) -->
+    <div style="display:none;" class="print-area">
+        <h2 style="font-size:2rem; margin-bottom:0.5rem; border-bottom:2px solid #000; padding-bottom:1rem;">TestFlow Official Report Card</h2>
+        <div style="margin-bottom:2rem; margin-top:1rem;">
+            <strong>Student:</strong> {{ request.user.get_full_name|default:request.user.username }}<br>
+            <strong>Date:</strong> {{ attempt.submitted_at|date:"F j, Y H:i" }}
+        </div>
+    </div>
+
+    <!-- Performance Summary -->
+    <div class="card" style="margin-bottom:2.5rem; padding:0; overflow:hidden;">
+        <div style="padding:2rem; background:linear-gradient(to right, #1e293b, #0f172a); color:white; display:flex; justify-content:space-between; align-items:center;">
+            <div>
+                <span class="badge" style="background:rgba(255,255,255,0.2); color:white; border:none; margin-bottom:0.75rem;">{{ attempt.exam.subject.name }}</span>
+                <h2 style="font-size:1.75rem; color:white; margin:0;">{{ attempt.exam.title }}</h2>
+                <div style="color:#94a3b8; font-size:0.95rem; margin-top:0.5rem;">Completed on {{ attempt.submitted_at|date:"M d, Y" }} at {{ attempt.submitted_at|date:"h:i A" }}</div>
+            </div>
+            <div style="text-align:right;">
+                <div style="font-size:3rem; font-weight:800; line-height:1; color:{% if attempt.is_passed %}#34d399{% else %}#f87171{% endif %};">{{ attempt.percentage|floatformat:"1" }}%</div>
+                <div style="font-weight:700; font-size:1.1rem; text-transform:uppercase; letter-spacing:0.05em; color:{% if attempt.is_passed %}#34d399{% else %}#f87171{% endif %}; margin-top:0.25rem;">
+                    {% if attempt.is_passed %}PASSED{% else %}FAILED{% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div style="display:grid; grid-template-columns:repeat(5, 1fr); gap:1px; background:var(--border);">
+            <div style="background:var(--surface); padding:1.5rem; text-align:center;">
+                <p style="font-size:0.75rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:0.25rem;">Total Score</p>
+                <p style="font-size:1.5rem; font-weight:800; color:var(--text-main);">{{ attempt.score }} / {{ attempt.total_marks }}</p>
+            </div>
+            <div style="background:var(--surface); padding:1.5rem; text-align:center;">
+                <p style="font-size:0.75rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:0.25rem;">Correct</p>
+                <p style="font-size:1.5rem; font-weight:800; color:var(--success);">{{ attempt.correct_answers }}</p>
+            </div>
+            <div style="background:var(--surface); padding:1.5rem; text-align:center;">
+                <p style="font-size:0.75rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:0.25rem;">Wrong</p>
+                <p style="font-size:1.5rem; font-weight:800; color:var(--danger);">{{ attempt.wrong_answers }}</p>
+            </div>
+            <div style="background:var(--surface); padding:1.5rem; text-align:center;">
+                <p style="font-size:0.75rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:0.25rem;">Unanswered</p>
+                <p style="font-size:1.5rem; font-weight:800; color:var(--warning);">{{ attempt.unanswered }}</p>
+            </div>
+            <div style="background:var(--surface); padding:1.5rem; text-align:center;">
+                <p style="font-size:0.75rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:0.25rem;">Time Taken</p>
+                <p style="font-size:1.5rem; font-weight:800; color:var(--text-main);">{{ attempt.time_taken_formatted }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Question Review -->
+    <div style="display:flex; align-items:center; gap:1rem; margin-bottom:1.5rem;">
+        <h3 style="font-size:1.35rem; font-weight:800;">Question Review</h3>
+        <div style="height:1px; background:var(--border); flex:1;"></div>
+    </div>
+    
+    <div style="display:flex; flex-direction:column; gap:2rem;">
+        {% for ans in answers %}
+        <div class="card" style="padding:0; overflow:hidden; border:1px solid {% if ans.is_correct %}#a7f3d0{% elif not ans.selected_option %}#fde68a{% else %}#fecaca{% endif %}; box-shadow:0 4px 15px rgba(0,0,0,0.03);">
+            
+            <div style="background:{% if ans.is_correct %}#ecfdf5{% elif not ans.selected_option %}#fffbeb{% else %}#fef2f2{% endif %}; padding:1rem 2rem; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid {% if ans.is_correct %}#a7f3d0{% elif not ans.selected_option %}#fde68a{% else %}#fecaca{% endif %};">
+                <h4 style="font-size:1rem; font-weight:700; color:{% if ans.is_correct %}#065f46{% elif not ans.selected_option %}#b45309{% else %}#991b1b{% endif %}; margin:0;">
+                    Question {{ forloop.counter }}
+                </h4>
+                <div style="font-size:0.85rem; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; padding:0.35rem 0.75rem; border-radius:4px; background:rgba(255,255,255,0.7); color:{% if ans.is_correct %}var(--success){% elif not ans.selected_option %}var(--warning){% else %}var(--danger){% endif %};">
+                    {% if ans.is_correct %}
+                        CORRECT (+{{ ans.marks_obtained }})
+                    {% elif not ans.selected_option %}
+                        UNANSWERED (0)
+                    {% else %}
+                        INCORRECT ({{ ans.marks_obtained }})
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div style="padding:2rem;">
+                <p style="font-size:1.15rem; font-weight:600; margin-bottom:2rem; line-height:1.6;">{{ ans.question.question_text }}</p>
+                
+                <div style="display:grid; grid-template-columns:1fr; gap:0.75rem; margin-bottom:2rem;">
+                    <!-- Option A -->
+                    <div style="padding:1rem 1.25rem; border-radius:var(--radius-sm); border:2px solid {% if ans.question.correct_option == 'A' %}#34d399{% elif ans.selected_option == 'A' and not ans.is_correct %}#f87171{% else %}var(--border){% endif %}; background:{% if ans.question.correct_option == 'A' %}#ecfdf5{% elif ans.selected_option == 'A' and not ans.is_correct %}#fef2f2{% else %}var(--surface){% endif %}; display:flex; gap:1rem; font-weight:500;">
+                        <span style="font-weight:800; color:{% if ans.question.correct_option == 'A' %}#059669{% elif ans.selected_option == 'A' and not ans.is_correct %}#dc2626{% else %}var(--text-muted){% endif %};">A.</span>
+                        {{ ans.question.option_a }}
+                        {% if ans.question.correct_option == 'A' %}<svg style="margin-left:auto; color:#059669;" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>{% endif %}
+                        {% if ans.selected_option == 'A' and not ans.is_correct %}<svg style="margin-left:auto; color:#dc2626;" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>{% endif %}
+                    </div>
+                    
+                    <!-- Option B -->
+                    <div style="padding:1rem 1.25rem; border-radius:var(--radius-sm); border:2px solid {% if ans.question.correct_option == 'B' %}#34d399{% elif ans.selected_option == 'B' and not ans.is_correct %}#f87171{% else %}var(--border){% endif %}; background:{% if ans.question.correct_option == 'B' %}#ecfdf5{% elif ans.selected_option == 'B' and not ans.is_correct %}#fef2f2{% else %}var(--surface){% endif %}; display:flex; gap:1rem; font-weight:500;">
+                        <span style="font-weight:800; color:{% if ans.question.correct_option == 'B' %}#059669{% elif ans.selected_option == 'B' and not ans.is_correct %}#dc2626{% else %}var(--text-muted){% endif %};">B.</span>
+                        {{ ans.question.option_b }}
+                        {% if ans.question.correct_option == 'B' %}<svg style="margin-left:auto; color:#059669;" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>{% endif %}
+                        {% if ans.selected_option == 'B' and not ans.is_correct %}<svg style="margin-left:auto; color:#dc2626;" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>{% endif %}
+                    </div>
+                    
+                    <!-- Option C -->
+                    <div style="padding:1rem 1.25rem; border-radius:var(--radius-sm); border:2px solid {% if ans.question.correct_option == 'C' %}#34d399{% elif ans.selected_option == 'C' and not ans.is_correct %}#f87171{% else %}var(--border){% endif %}; background:{% if ans.question.correct_option == 'C' %}#ecfdf5{% elif ans.selected_option == 'C' and not ans.is_correct %}#fef2f2{% else %}var(--surface){% endif %}; display:flex; gap:1rem; font-weight:500;">
+                        <span style="font-weight:800; color:{% if ans.question.correct_option == 'C' %}#059669{% elif ans.selected_option == 'C' and not ans.is_correct %}#dc2626{% else %}var(--text-muted){% endif %};">C.</span>
+                        {{ ans.question.option_c }}
+                        {% if ans.question.correct_option == 'C' %}<svg style="margin-left:auto; color:#059669;" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>{% endif %}
+                        {% if ans.selected_option == 'C' and not ans.is_correct %}<svg style="margin-left:auto; color:#dc2626;" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>{% endif %}
+                    </div>
+                    
+                    <!-- Option D -->
+                    <div style="padding:1rem 1.25rem; border-radius:var(--radius-sm); border:2px solid {% if ans.question.correct_option == 'D' %}#34d399{% elif ans.selected_option == 'D' and not ans.is_correct %}#f87171{% else %}var(--border){% endif %}; background:{% if ans.question.correct_option == 'D' %}#ecfdf5{% elif ans.selected_option == 'D' and not ans.is_correct %}#fef2f2{% else %}var(--surface){% endif %}; display:flex; gap:1rem; font-weight:500;">
+                        <span style="font-weight:800; color:{% if ans.question.correct_option == 'D' %}#059669{% elif ans.selected_option == 'D' and not ans.is_correct %}#dc2626{% else %}var(--text-muted){% endif %};">D.</span>
+                        {{ ans.question.option_d }}
+                        {% if ans.question.correct_option == 'D' %}<svg style="margin-left:auto; color:#059669;" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>{% endif %}
+                        {% if ans.selected_option == 'D' and not ans.is_correct %}<svg style="margin-left:auto; color:#dc2626;" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>{% endif %}
+                    </div>
+                </div>
+                
+                {% if ans.question.explanation %}
+                <div style="background:var(--background); border-left:4px solid var(--primary); padding:1.25rem; border-radius:0 var(--radius-sm) var(--radius-sm) 0;">
+                    <div style="display:flex; align-items:center; gap:0.5rem; color:var(--primary); font-weight:700; margin-bottom:0.5rem; font-size:0.9rem; text-transform:uppercase; letter-spacing:0.05em;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                        Explanation
+                    </div>
+                    <p style="color:var(--text-main); line-height:1.6;">{{ ans.question.explanation }}</p>
+                </div>
+                {% endif %}
+                
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

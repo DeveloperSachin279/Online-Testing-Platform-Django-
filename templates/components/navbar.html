@@ -1,0 +1,18 @@
+<header class="top-navbar">
+    <div class="navbar-user" onclick="window.location.href='{% url 'profile' %}'">
+        <div class="user-info" style="text-align:right;">
+            <span class="user-name">{{ user.get_full_name|default:user.username }}</span>
+            <span class="user-role">{% if user.is_staff %}Administrator{% else %}Student{% endif %}</span>
+        </div>
+        <div class="avatar">
+            {{ user.username|make_list|first|upper }}
+        </div>
+    </div>
+    
+    <form action="{% url 'logout' %}" method="post" style="margin-left: 1.5rem; padding-left: 1.5rem; border-left: 1px solid var(--border);">
+        {% csrf_token %}
+        <button type="submit" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-weight:600; font-size:0.9rem; transition:color 0.2s;" onmouseover="this.style.color='var(--danger)'" onmouseout="this.style.color='var(--text-muted)'">
+            Sign Out
+        </button>
+    </form>
+</header>

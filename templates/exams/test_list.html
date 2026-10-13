@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Available Tests | TestFlow{% endblock %}
+{% block content %}
+<div class="page-header" style="flex-direction:row; align-items:center;">
+    <div>
+        <h1 class="page-title">Available Tests</h1>
+        <p class="page-subtitle">Browse and select assessments to take.</p>
+    </div>
+</div>
+
+<div class="card" style="margin-bottom:2rem; padding:1rem; display:flex; align-items:center; gap:1rem; border-radius:var(--radius-lg);">
+    <div style="color:var(--text-muted); padding-left:0.75rem;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+    </div>
+    <form method="get" style="flex:1; display:flex; gap:1rem;">
+        <input type="text" name="search" value="{{ search_query }}" class="form-control" placeholder="Search tests by name or description..." style="border:none; background:transparent; padding:0.5rem; box-shadow:none; flex:1; font-size:1rem;">
+        <button type="submit" class="btn btn-primary" style="padding:0.5rem 1.5rem; border-radius:var(--radius-sm);">Search</button>
+    </form>
+</div>
+
+{% if exams %}
+<div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(320px, 1fr)); gap:1.5rem;">
+    {% for exam in exams %}
+    <div class="card" style="display:flex; flex-direction:column; transition:transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='var(--shadow-lg)';" onmouseout="this.style.transform='none'; this.style.boxShadow='var(--shadow)';">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:1rem;">
+            <div style="width:48px; height:48px; background:var(--primary-light); color:var(--primary); border-radius:12px; display:flex; align-items:center; justify-content:center;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            </div>
+            <span class="badge" style="background:#fef3c7; color:#b45309;">{{ exam.difficulty }}</span>
+        </div>
+        
+        <h3 style="font-size:1.25rem; font-weight:800; margin-bottom:0.5rem; color:var(--text-main);">{{ exam.title }}</h3>
+        <span class="badge" style="background:#e0f2fe; color:#0369a1; width:fit-content; margin-bottom:1rem;">{{ exam.subject.name }}</span>
+        
+        <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:1.5rem; flex:1; line-height:1.6;">
+            {{ exam.description|truncatewords:15 }}
+        </p>
+        
+        <div style="display:flex; justify-content:space-between; padding-top:1.25rem; border-top:1px solid var(--border); margin-bottom:1.25rem;">
+            <div style="display:flex; align-items:center; gap:0.5rem; color:var(--text-main); font-weight:600; font-size:0.9rem;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 8v4l3 3"></path></svg>
+                {{ exam.duration_minutes }} Mins
+            </div>
+            <div style="display:flex; align-items:center; gap:0.5rem; color:var(--text-main); font-weight:600; font-size:0.9rem;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                {{ exam.questions.count }} Qs
+            </div>
+        </div>
+        
+        <a href="{% url 'test_details' exam.slug %}" class="btn btn-outline" style="width:100%; justify-content:center; padding:0.75rem;">View Details</a>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state" style="margin-top:2rem; padding:4rem 2rem;">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+    <h3 style="font-size:1.5rem; margin-top:1.5rem; color:var(--text-main);">No tests available</h3>
+    <p style="color:var(--text-muted); font-size:1rem;">We couldn't find any tests matching your criteria.</p>
+</div>
+{% endif %}
+{% endblock %}

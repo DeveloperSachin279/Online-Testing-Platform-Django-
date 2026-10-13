@@ -1,0 +1,41 @@
+{% url 'dashboard' as dash_url %}
+{% url 'tests' as tests_url %}
+{% url 'results' as results_url %}
+{% url 'profile' as profile_url %}
+{% url 'admin_dashboard' as admin_dash_url %}
+
+<aside class="sidebar">
+    <div class="sidebar-header">
+        <a href="{% url 'landing' %}" class="logo">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            TestFlow
+        </a>
+    </div>
+    <nav class="sidebar-nav">
+        {% if user.is_staff %}
+            <div style="padding: 0.5rem 1rem; font-size: 0.7rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 0.5rem;">Administration</div>
+            <a href="{{ admin_dash_url }}" class="nav-item {% if request.path|slice:':16' == '/admin-dashboard' %}active{% endif %}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                Admin Panel
+            </a>
+            <div style="padding: 0.5rem 1rem; font-size: 0.7rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 1rem;">Student View</div>
+        {% endif %}
+        
+        <a href="{{ dash_url }}" class="nav-item {% if request.path == dash_url %}active{% endif %}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+            Dashboard
+        </a>
+        <a href="{{ tests_url }}" class="nav-item {% if request.path|slice:':6' == '/tests' %}active{% endif %}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            Available Tests
+        </a>
+        <a href="{{ results_url }}" class="nav-item {% if request.path|slice:':8' == '/results' %}active{% endif %}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+            My Results
+        </a>
+        <a href="{{ profile_url }}" class="nav-item {% if request.path == profile_url %}active{% endif %}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            Profile
+        </a>
+    </nav>
+</aside>

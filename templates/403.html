@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}403 - Forbidden | QuizForge{% endblock %}
+{% block content %}
+<div class="card" style="max-width:500px; margin:4rem auto; text-align:center;">
+    <div style="font-size:4rem; color:var(--warning); margin-bottom:1rem;">403</div>
+    <h2 style="margin-bottom:1rem;">Access Denied</h2>
+    <p style="color:var(--text-muted); margin-bottom:2rem;">You don't have permission to access this page.</p>
+    <a href="{% url 'dashboard' %}" class="btn btn-primary">Return to Dashboard</a>
+</div>
+{% endblock %}

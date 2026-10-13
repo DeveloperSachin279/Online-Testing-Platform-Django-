@@ -1,0 +1,32 @@
+
+{% if page_obj.has_other_pages %}
+<div style="display:flex; justify-content:center; margin-top:2rem;">
+    <nav aria-label="Pagination">
+        <ul style="display:flex; list-style:none; padding:0; margin:0; gap:0.25rem;">
+            {% if page_obj.has_previous %}
+            <li>
+                <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}" class="btn btn-outline" style="padding:0.5rem 0.75rem;">&laquo; Prev</a>
+            </li>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                <li>
+                    <span class="btn btn-primary" style="padding:0.5rem 0.75rem; pointer-events:none;">{{ num }}</span>
+                </li>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                <li>
+                    <a href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}" class="btn btn-outline" style="padding:0.5rem 0.75rem;">{{ num }}</a>
+                </li>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+            <li>
+                <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}" class="btn btn-outline" style="padding:0.5rem 0.75rem;">Next &raquo;</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+{% endif %}

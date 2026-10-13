@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}404 - Page Not Found | QuizForge{% endblock %}
+{% block content %}
+<div class="card" style="max-width:500px; margin:4rem auto; text-align:center;">
+    <div style="font-size:4rem; color:var(--danger); margin-bottom:1rem;">404</div>
+    <h2 style="margin-bottom:1rem;">Page Not Found</h2>
+    <p style="color:var(--text-muted); margin-bottom:2rem;">The page you are looking for doesn't exist or has been moved.</p>
+    <a href="{% url 'landing' %}" class="btn btn-primary">Return Home</a>
+</div>
+{% endblock %}

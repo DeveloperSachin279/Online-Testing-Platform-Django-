@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}My Profile | TestFlow{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">My Profile</h1>
+    </div>
+</div>
+
+<div class="card" style="max-width:900px; margin:0 auto; padding:0; overflow:hidden;">
+    <!-- Profile Header Background -->
+    <div style="height:150px; background:linear-gradient(135deg, var(--primary), var(--secondary));"></div>
+    
+    <div style="padding:0 2.5rem 2.5rem;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-top:-50px; margin-bottom:2rem;">
+            <div style="display:flex; align-items:flex-end; gap:1.5rem;">
+                <div style="width:120px; height:120px; background:var(--surface); border-radius:20px; padding:6px; box-shadow:var(--shadow-md);">
+                    <div style="width:100%; height:100%; background:linear-gradient(135deg, var(--primary-light), #e0f2fe); color:var(--primary); border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:3rem; font-weight:800;">
+                        {{ request.user.username|make_list|first|upper }}
+                    </div>
+                </div>
+                <div style="padding-bottom:0.5rem;">
+                    <h2 style="font-size:2rem; margin-bottom:0.25rem;">{{ request.user.get_full_name|default:request.user.username }}</h2>
+                    <p style="color:var(--text-muted); font-weight:500; display:flex; align-items:center; gap:0.5rem;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                        {{ request.user.email|default:"No email provided" }}
+                    </p>
+                </div>
+            </div>
+            <div style="padding-bottom:0.5rem; text-align:right;">
+                <span class="badge" style="background:var(--background); color:var(--text-main); font-size:0.85rem; padding:0.5rem 1rem; border:1px solid var(--border);">
+                    Joined: {{ request.user.date_joined|date:"M Y" }}
+                </span>
+            </div>
+        </div>
+        
+        <h3 style="margin-bottom:1.25rem; font-size:1.25rem; border-bottom:2px solid var(--background); padding-bottom:0.75rem;">Lifetime Performance</h3>
+        
+        <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:1rem; margin-bottom:2.5rem;">
+            <div style="background:var(--background); padding:1.5rem; border-radius:var(--radius-sm); border:1px solid var(--border); text-align:center;">
+                <p style="font-size:0.8rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; margin-bottom:0.5rem; letter-spacing:0.05em;">Tests Completed</p>
+                <p style="font-size:2rem; font-weight:800; color:var(--text-main); line-height:1;">{{ tests_completed }}</p>
+            </div>
+            <div style="background:var(--background); padding:1.5rem; border-radius:var(--radius-sm); border:1px solid var(--border); text-align:center;">
+                <p style="font-size:0.8rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; margin-bottom:0.5rem; letter-spacing:0.05em;">Avg Score</p>
+                <p style="font-size:2rem; font-weight:800; color:var(--secondary); line-height:1;">{{ avg_score }}%</p>
+            </div>
+            <div style="background:var(--background); padding:1.5rem; border-radius:var(--radius-sm); border:1px solid var(--border); text-align:center;">
+                <p style="font-size:0.8rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; margin-bottom:0.5rem; letter-spacing:0.05em;">Best Score</p>
+                <p style="font-size:2rem; font-weight:800; color:var(--warning); line-height:1;">{{ best_score }}%</p>
+            </div>
+            <div style="background:var(--background); padding:1.5rem; border-radius:var(--radius-sm); border:1px solid var(--border); text-align:center;">
+                <p style="font-size:0.8rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; margin-bottom:0.5rem; letter-spacing:0.05em;">Overall Accuracy</p>
+                <p style="font-size:2rem; font-weight:800; color:var(--success); line-height:1;">{{ accuracy }}%</p>
+            </div>
+        </div>
+        
+        {% if latest_attempt %}
+        <h3 style="margin-bottom:1.25rem; font-size:1.25rem; border-bottom:2px solid var(--background); padding-bottom:0.75rem;">Latest Achievement</h3>
+        <div style="display:flex; justify-content:space-between; align-items:center; background:var(--surface); border:1px solid var(--primary-light); padding:1.5rem; border-radius:var(--radius-sm); box-shadow:0 4px 12px rgba(79,70,229,0.05);">
+            <div style="display:flex; align-items:center; gap:1.25rem;">
+                <div style="width:48px; height:48px; background:var(--primary-light); color:var(--primary); border-radius:12px; display:flex; align-items:center; justify-content:center;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                </div>
+                <div>
+                    <strong style="font-size:1.1rem; display:block;">{{ latest_attempt.exam.title }}</strong>
+                    <span style="font-size:0.85rem; color:var(--text-muted); font-weight:500;">Completed on {{ latest_attempt.submitted_at|date:"F j, Y" }}</span>
+                </div>
+            </div>
+            <div style="display:flex; flex-direction:column; align-items:flex-end;">
+                <div style="font-weight:800; font-size:1.5rem; color:{% if latest_attempt.is_passed %}var(--success){% else %}var(--danger){% endif %};">
+                    {{ latest_attempt.percentage|floatformat:"0" }}%
+                </div>
+                <span class="badge" style="background:{% if latest_attempt.is_passed %}#ecfdf5{% else %}#fef2f2{% endif %}; color:{% if latest_attempt.is_passed %}var(--success){% else %}var(--danger){% endif %}; border:none;">
+                    {% if latest_attempt.is_passed %}PASSED{% else %}FAILED{% endif %}
+                </span>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

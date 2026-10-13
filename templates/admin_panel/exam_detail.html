@@ -1,0 +1,133 @@
+{% extends "admin_panel/admin_base.html" %}
+{% block title %}Manage Exam: {{ exam.title }}{% endblock %}
+{% block content %}
+<a href="{% url 'admin_exam_list' %}" style="display:inline-flex; align-items:center; gap:0.5rem; margin-bottom:1rem; color:var(--text-muted); font-size:0.95rem; font-weight:600; transition:var(--transition);" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-muted)'">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+    Back to Tests
+</a>
+
+<div class="card" style="margin-bottom:2rem; padding:0; overflow:hidden;">
+    <div style="background:linear-gradient(to right, #1e293b, #0f172a); padding:2rem; color:white; display:flex; justify-content:space-between; align-items:flex-start;">
+        <div>
+            <div style="display:flex; gap:0.75rem; margin-bottom:1rem;">
+                <span class="badge" style="background:rgba(255,255,255,0.2); color:white; border:none;">{{ exam.subject.name }}</span>
+                {% if exam.is_published %}
+                    <span class="badge" style="background:#059669; color:white; border:none;">Published</span>
+                {% else %}
+                    <span class="badge" style="background:#d97706; color:white; border:none;">Draft</span>
+                {% endif %}
+            </div>
+            <h2 style="font-size:2rem; margin-bottom:0.5rem; color:white; font-weight:800;">{{ exam.title }}</h2>
+        </div>
+        <div style="display:flex; gap:0.75rem;">
+            <a href="{% url 'admin_exam_update' exam.id %}" class="btn" style="background:rgba(255,255,255,0.1); color:white; border:1px solid rgba(255,255,255,0.2);">Edit Info</a>
+            <form method="post" action="{% url 'admin_exam_publish_toggle' exam.id %}" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn {% if exam.is_published %}btn-outline{% else %}btn-primary{% endif %}" style="{% if exam.is_published %}background:transparent; color:white; border-color:rgba(255,255,255,0.5);{% else %}background:#10b981; color:white; border:none;{% endif %}">
+                    {% if exam.is_published %}Unpublish{% else %}Publish Exam{% endif %}
+                </button>
+            </form>
+            <a href="{% url 'admin_exam_delete' exam.id %}" class="btn" style="background:rgba(239,68,68,0.2); color:#fca5a5; border:1px solid rgba(239,68,68,0.3);">Delete</a>
+        </div>
+    </div>
+    
+    <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:1px; background:var(--border);">
+        <div style="background:var(--surface); padding:1.5rem; text-align:center;">
+            <p style="font-size:0.75rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:0.25rem;">Duration</p>
+            <p style="font-size:1.5rem; font-weight:800; color:var(--text-main);">{{ exam.duration_minutes }} <span style="font-size:1rem; font-weight:600; color:var(--text-muted);">Min</span></p>
+        </div>
+        <div style="background:var(--surface); padding:1.5rem; text-align:center;">
+            <p style="font-size:0.75rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:0.25rem;">Total Questions</p>
+            <p style="font-size:1.5rem; font-weight:800; color:var(--primary);">{{ questions.count }}</p>
+        </div>
+        <div style="background:var(--surface); padding:1.5rem; text-align:center;">
+            <p style="font-size:0.75rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:0.25rem;">Total Marks</p>
+            <p style="font-size:1.5rem; font-weight:800; color:var(--text-main);">{{ exam.total_marks }} <span style="font-size:0.9rem; font-weight:600; color:var(--success);">(Pass: {{ exam.passing_marks }})</span></p>
+        </div>
+        <div style="background:var(--surface); padding:1.5rem; text-align:center;">
+            <p style="font-size:0.75rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:0.25rem;">Negative Marking</p>
+            <p style="font-size:1.25rem; font-weight:800; color:var(--text-main);">
+                {% if exam.negative_marking_enabled %}
+                    <span style="color:var(--danger);">Yes (-{{ exam.negative_marks }})</span>
+                {% else %}
+                    No
+                {% endif %}
+            </p>
+        </div>
+    </div>
+</div>
+
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+    <h3 style="font-size:1.35rem; font-weight:800;">Questions ({{ questions.count }})</h3>
+    <a href="{% url 'admin_question_create' exam.id %}" class="btn btn-primary" style="padding:0.75rem 1.5rem; display:flex; align-items:center; gap:0.5rem; background:linear-gradient(to right, #4f46e5, #3b82f6); box-shadow:0 4px 14px rgba(79,70,229,0.3); border:none;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        Add Question
+    </a>
+</div>
+
+<div style="display:flex; flex-direction:column; gap:1.5rem;">
+    {% for q in questions %}
+    <div class="card" style="padding:0; overflow:hidden; border:1px solid var(--border);">
+        <div style="background:var(--surface-hover); padding:1rem 1.5rem; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border);">
+            <div style="display:flex; align-items:center; gap:1rem;">
+                <div style="width:36px; height:36px; background:var(--primary); color:white; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800;">
+                    {{ forloop.counter }}
+                </div>
+                <div>
+                    <h4 style="font-size:1.05rem; font-weight:700; margin:0;">Question</h4>
+                    <div style="font-size:0.75rem; color:var(--text-muted); font-weight:600; text-transform:uppercase; letter-spacing:0.05em; margin-top:0.2rem;">
+                        Marks: {{ q.marks }} &bull; Order: {{ q.order }}
+                    </div>
+                </div>
+            </div>
+            <div style="display:flex; gap:0.5rem;">
+                <a href="{% url 'admin_question_update' q.id %}" class="btn btn-outline" style="padding:0.4rem 0.8rem; font-size:0.85rem;">Edit</a>
+                <a href="{% url 'admin_question_delete' q.id %}" class="btn btn-outline" style="padding:0.4rem 0.8rem; font-size:0.85rem; border-color:var(--danger); color:var(--danger);">Delete</a>
+            </div>
+        </div>
+        
+        <div style="padding:1.5rem;">
+            <p style="font-size:1.1rem; font-weight:600; margin-bottom:1.5rem; color:var(--text-main); line-height:1.6;">{{ q.question_text }}</p>
+            
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+                <div style="padding:1rem; border-radius:var(--radius-sm); border:2px solid {% if q.correct_option == 'A' %}#34d399{% else %}var(--border){% endif %}; background:{% if q.correct_option == 'A' %}#ecfdf5{% else %}var(--surface){% endif %}; display:flex; gap:0.75rem; font-weight:500;">
+                    <span style="font-weight:800; color:{% if q.correct_option == 'A' %}#059669{% else %}var(--text-muted){% endif %};">A.</span>
+                    {{ q.option_a }}
+                    {% if q.correct_option == 'A' %}<svg style="margin-left:auto; color:#059669;" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>{% endif %}
+                </div>
+                
+                <div style="padding:1rem; border-radius:var(--radius-sm); border:2px solid {% if q.correct_option == 'B' %}#34d399{% else %}var(--border){% endif %}; background:{% if q.correct_option == 'B' %}#ecfdf5{% else %}var(--surface){% endif %}; display:flex; gap:0.75rem; font-weight:500;">
+                    <span style="font-weight:800; color:{% if q.correct_option == 'B' %}#059669{% else %}var(--text-muted){% endif %};">B.</span>
+                    {{ q.option_b }}
+                    {% if q.correct_option == 'B' %}<svg style="margin-left:auto; color:#059669;" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>{% endif %}
+                </div>
+                
+                <div style="padding:1rem; border-radius:var(--radius-sm); border:2px solid {% if q.correct_option == 'C' %}#34d399{% else %}var(--border){% endif %}; background:{% if q.correct_option == 'C' %}#ecfdf5{% else %}var(--surface){% endif %}; display:flex; gap:0.75rem; font-weight:500;">
+                    <span style="font-weight:800; color:{% if q.correct_option == 'C' %}#059669{% else %}var(--text-muted){% endif %};">C.</span>
+                    {{ q.option_c }}
+                    {% if q.correct_option == 'C' %}<svg style="margin-left:auto; color:#059669;" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>{% endif %}
+                </div>
+                
+                <div style="padding:1rem; border-radius:var(--radius-sm); border:2px solid {% if q.correct_option == 'D' %}#34d399{% else %}var(--border){% endif %}; background:{% if q.correct_option == 'D' %}#ecfdf5{% else %}var(--surface){% endif %}; display:flex; gap:0.75rem; font-weight:500;">
+                    <span style="font-weight:800; color:{% if q.correct_option == 'D' %}#059669{% else %}var(--text-muted){% endif %};">D.</span>
+                    {{ q.option_d }}
+                    {% if q.correct_option == 'D' %}<svg style="margin-left:auto; color:#059669;" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>{% endif %}
+                </div>
+            </div>
+            {% if q.explanation %}
+            <div style="margin-top:1.25rem; background:var(--background); padding:1rem; border-radius:var(--radius-sm); border-left:4px solid var(--primary);">
+                <span style="display:block; font-size:0.75rem; font-weight:700; color:var(--primary); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:0.25rem;">Explanation</span>
+                <p style="font-size:0.95rem; margin:0; color:var(--text-main);">{{ q.explanation }}</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% empty %}
+    <div class="empty-state" style="margin-top:1rem; padding:4rem 2rem;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><line x1="9" y1="15" x2="15" y2="15"></line></svg>
+        <h3 style="font-size:1.5rem; margin-top:1.5rem; color:var(--text-main);">No questions added</h3>
+        <p style="color:var(--text-muted); font-size:1rem;">Click "Add Question" to start building this test.</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

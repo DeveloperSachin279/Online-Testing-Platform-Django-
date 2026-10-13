@@ -1,0 +1,50 @@
+{% extends "admin_panel/admin_base.html" %}
+{% block title %}Manage Students{% endblock %}
+{% block content %}
+<div class="page-header" style="flex-direction:row; align-items:center;">
+    <div>
+        <h1 class="page-title">Manage Students</h1>
+        <p class="page-subtitle">View and manage registered students.</p>
+    </div>
+</div>
+
+<div class="card" style="padding:0; overflow:hidden;">
+    <table style="width:100%; text-align:left; border-collapse:collapse;">
+        <thead style="background:var(--surface-hover);">
+            <tr>
+                <th style="padding:1.25rem 1.75rem; font-weight:700; font-size:0.8rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">Student</th>
+                <th style="padding:1.25rem 1.75rem; font-weight:700; font-size:0.8rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">Email</th>
+                <th style="padding:1.25rem 1.75rem; font-weight:700; font-size:0.8rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">Joined Date</th>
+                <th style="padding:1.25rem 1.75rem; font-weight:700; font-size:0.8rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em; text-align:center;">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for student in students %}
+            <tr style="border-top:1px solid var(--border); transition:var(--transition);" onmouseover="this.style.backgroundColor='var(--surface-hover)'" onmouseout="this.style.backgroundColor='transparent'">
+                <td style="padding:1.25rem 1.75rem;">
+                    <div style="display:flex; align-items:center; gap:1rem;">
+                        <div style="width:36px; height:36px; background:#eef2ff; color:var(--primary); border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.9rem;">
+                            {{ student.username|make_list|first|upper }}
+                        </div>
+                        <strong style="color:var(--text-main); font-size:1rem;">{{ student.username }}</strong>
+                    </div>
+                </td>
+                <td style="padding:1.25rem 1.75rem; color:var(--text-muted);">{{ student.email|default:"-" }}</td>
+                <td style="padding:1.25rem 1.75rem; color:var(--text-muted);">{{ student.date_joined|date:"M d, Y" }}</td>
+                <td style="padding:1.25rem 1.75rem; text-align:center;">
+                    {% if student.is_active %}
+                        <span class="badge" style="background:#ecfdf5; color:#059669; border:1px solid #a7f3d0;">Active</span>
+                    {% else %}
+                        <span class="badge" style="background:#fef2f2; color:#dc2626; border:1px solid #fecaca;">Inactive</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" style="padding:3rem; text-align:center; color:var(--text-muted);">No students found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

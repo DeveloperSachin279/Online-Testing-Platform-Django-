@@ -1,0 +1,1043 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+    .tf-landing {
+        --tf-primary: #5b4ff5;
+        --tf-primary-dark: #4738d8;
+        --tf-blue: #3b82f6;
+        --tf-text: #111827;
+        --tf-muted: #64748b;
+        --tf-bg: #f8f9ff;
+        --tf-border: #e7e9f2;
+        --tf-card: #ffffff;
+        color: var(--tf-text);
+        overflow: hidden;
+        background: #fff;
+    }
+
+    /* =========================
+       HERO
+    ========================= */
+
+    .tf-hero {
+        position: relative;
+        min-height: 650px;
+        display: flex;
+        align-items: center;
+        padding: 90px 6%;
+        background:
+            radial-gradient(circle at 10% 20%, rgba(91,79,245,.14), transparent 30%),
+            radial-gradient(circle at 90% 80%, rgba(59,130,246,.12), transparent 30%),
+            linear-gradient(135deg, #fbfbff 0%, #f4f6ff 100%);
+        border-bottom: 1px solid var(--tf-border);
+    }
+
+    .tf-hero::before {
+        content: "";
+        position: absolute;
+        width: 500px;
+        height: 500px;
+        border-radius: 50%;
+        border: 1px solid rgba(91,79,245,.08);
+        top: -220px;
+        right: -150px;
+    }
+
+    .tf-hero-container {
+        width: 100%;
+        max-width: 1250px;
+        margin: auto;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 70px;
+        align-items: center;
+        position: relative;
+        z-index: 2;
+    }
+
+    .tf-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 9px 15px;
+        border-radius: 999px;
+        background: rgba(91,79,245,.09);
+        color: var(--tf-primary);
+        font-size: 13px;
+        font-weight: 800;
+        letter-spacing: .04em;
+        text-transform: uppercase;
+        margin-bottom: 24px;
+    }
+
+    .tf-badge-dot {
+        width: 7px;
+        height: 7px;
+        background: #22c55e;
+        border-radius: 50%;
+        box-shadow: 0 0 0 5px rgba(34,197,94,.1);
+    }
+
+    .tf-hero h1 {
+        font-size: clamp(3.2rem, 5vw, 5.2rem);
+        line-height: 1.02;
+        letter-spacing: -0.055em;
+        margin: 0 0 25px;
+        font-weight: 850;
+        color: #111827;
+    }
+
+    .tf-gradient-text {
+        background: linear-gradient(90deg, #5547ed, #3289ef);
+        -webkit-background-clip: text; 
+        background-clip: text;  
+        -webkit-text-fill-color: transparent;
+    }
+
+    .tf-hero-description {
+        max-width: 570px;
+        color: var(--tf-muted);
+        font-size: 18px;
+        line-height: 1.75;
+        margin-bottom: 34px;
+    }
+
+    .tf-actions {
+        display: flex;
+        gap: 13px;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .tf-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        padding: 14px 23px;
+        border-radius: 13px;
+        text-decoration: none;
+        font-weight: 750;
+        font-size: 15px;
+        transition: .25s ease;
+    }
+
+    .tf-btn-primary {
+        color: white;
+        background: linear-gradient(135deg, var(--tf-primary), #7067f7);
+        box-shadow: 0 14px 30px rgba(91,79,245,.24);
+    }
+
+    .tf-btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 18px 35px rgba(91,79,245,.32);
+    }
+
+    .tf-btn-secondary {
+        color: #334155;
+        background: white;
+        border: 1px solid var(--tf-border);
+    }
+
+    .tf-btn-secondary:hover {
+        transform: translateY(-3px);
+        border-color: #c8ccef;
+        box-shadow: 0 10px 25px rgba(15,23,42,.07);
+    }
+
+    .tf-trust {
+        margin-top: 27px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        color: #718096;
+        font-size: 13px;
+        font-weight: 650;
+    }
+
+    .tf-trust span {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+    }
+
+    .tf-check {
+        color: #16a34a;
+        font-weight: 900;
+    }
+
+    /* =========================
+       PRODUCT PREVIEW
+    ========================= */
+
+    .tf-preview-wrapper {
+        position: relative;
+    }
+
+    .tf-preview-glow {
+        position: absolute;
+        inset: 10% -5%;
+        background: rgba(91,79,245,.16);
+        filter: blur(65px);
+        border-radius: 50%;
+    }
+
+    .tf-preview {
+        position: relative;
+        background: rgba(255,255,255,.92);
+        border: 1px solid rgba(255,255,255,.9);
+        border-radius: 24px;
+        box-shadow:
+            0 35px 80px rgba(30,41,59,.13),
+            0 8px 25px rgba(91,79,245,.08);
+        padding: 18px;
+        transform: rotate(1deg);
+    }
+
+    .tf-window-bar {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 5px 15px;
+    }
+
+    .tf-window-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #d9dce7;
+    }
+
+    .tf-dashboard {
+        background: #f7f8fc;
+        border-radius: 17px;
+        padding: 22px;
+    }
+
+    .tf-dash-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 22px;
+    }
+
+    .tf-mini-brand {
+        font-size: 15px;
+        font-weight: 850;
+        color: var(--tf-primary);
+    }
+
+    .tf-avatar {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: linear-gradient(135deg,#766df8,#3d8bed);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        font-weight: 800;
+    }
+
+    .tf-welcome {
+        margin-bottom: 17px;
+    }
+
+    .tf-welcome strong {
+        display: block;
+        font-size: 19px;
+        margin-bottom: 4px;
+    }
+
+    .tf-welcome span {
+        color: #8791a5;
+        font-size: 12px;
+    }
+
+    .tf-stat-grid {
+        display: grid;
+        grid-template-columns: repeat(3,1fr);
+        gap: 10px;
+        margin-bottom: 16px;
+    }
+
+    .tf-stat {
+        background: white;
+        border: 1px solid #eceef5;
+        padding: 14px;
+        border-radius: 13px;
+    }
+
+    .tf-stat small {
+        color: #8992a6;
+        font-size: 10px;
+        display: block;
+        margin-bottom: 7px;
+    }
+
+    .tf-stat strong {
+        font-size: 19px;
+    }
+
+    .tf-test-card {
+        background: white;
+        border: 1px solid #eceef5;
+        border-radius: 14px;
+        padding: 16px;
+    }
+
+    .tf-test-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 13px;
+    }
+
+    .tf-test-head strong {
+        font-size: 13px;
+    }
+
+    .tf-pill {
+        padding: 5px 9px;
+        background: #eef0ff;
+        color: var(--tf-primary);
+        border-radius: 999px;
+        font-size: 9px;
+        font-weight: 800;
+    }
+
+    .tf-progress {
+        height: 7px;
+        border-radius: 20px;
+        background: #edf0f5;
+        overflow: hidden;
+        margin-bottom: 9px;
+    }
+
+    .tf-progress span {
+        display: block;
+        width: 78%;
+        height: 100%;
+        border-radius: inherit;
+        background: linear-gradient(90deg,#5b4ff5,#4895ef);
+    }
+
+    .tf-test-meta {
+        display: flex;
+        justify-content: space-between;
+        color: #8992a6;
+        font-size: 10px;
+    }
+
+    .tf-floating-card {
+        position: absolute;
+        right: -35px;
+        bottom: -30px;
+        background: white;
+        border: 1px solid #eef0f5;
+        border-radius: 16px;
+        padding: 14px 17px;
+        box-shadow: 0 20px 40px rgba(15,23,42,.12);
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        animation: tfFloat 4s ease-in-out infinite;
+    }
+
+    .tf-floating-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 11px;
+        background: #ecfdf5;
+        color: #16a34a;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 900;
+    }
+
+    .tf-floating-card strong {
+        display: block;
+        font-size: 13px;
+    }
+
+    .tf-floating-card span {
+        color: #8a93a6;
+        font-size: 10px;
+    }
+
+    @keyframes tfFloat {
+        0%,100% { transform: translateY(0); }
+        50% { transform: translateY(-7px); }
+    }
+
+    /* =========================
+       FEATURES
+    ========================= */
+
+    .tf-section {
+        padding: 95px 6%;
+    }
+
+    .tf-section-container {
+        max-width: 1180px;
+        margin: auto;
+    }
+
+    .tf-section-heading {
+        max-width: 680px;
+        margin: 0 auto 55px;
+        text-align: center;
+    }
+
+    .tf-eyebrow {
+        color: var(--tf-primary);
+        font-weight: 800;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: .08em;
+        margin-bottom: 12px;
+    }
+
+    .tf-section-heading h2 {
+        font-size: clamp(2.2rem,4vw,3.3rem);
+        letter-spacing: -.045em;
+        margin: 0 0 15px;
+        color: #111827;
+    }
+
+    .tf-section-heading p {
+        color: var(--tf-muted);
+        font-size: 16px;
+        line-height: 1.7;
+    }
+
+    .tf-feature-grid {
+        display: grid;
+        grid-template-columns: repeat(3,1fr);
+        gap: 20px;
+    }
+
+    .tf-feature {
+        padding: 30px;
+        border: 1px solid var(--tf-border);
+        border-radius: 20px;
+        background: white;
+        transition: .3s ease;
+    }
+
+    .tf-feature:hover {
+        transform: translateY(-7px);
+        box-shadow: 0 20px 45px rgba(15,23,42,.08);
+        border-color: #d7d4ff;
+    }
+
+    .tf-feature-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f0efff;
+        color: var(--tf-primary);
+        margin-bottom: 22px;
+    }
+
+    .tf-feature h3 {
+        margin: 0 0 9px;
+        font-size: 19px;
+    }
+
+    .tf-feature p {
+        margin: 0;
+        color: var(--tf-muted);
+        line-height: 1.65;
+        font-size: 14px;
+    }
+
+    /* =========================
+       HOW IT WORKS
+    ========================= */
+
+    .tf-how {
+        background: #f8f9ff;
+        border-top: 1px solid var(--tf-border);
+        border-bottom: 1px solid var(--tf-border);
+    }
+
+    .tf-steps {
+        display: grid;
+        grid-template-columns: repeat(3,1fr);
+        gap: 30px;
+        position: relative;
+    }
+
+    .tf-step {
+        text-align: center;
+        position: relative;
+    }
+
+    .tf-step-number {
+        width: 54px;
+        height: 54px;
+        margin: 0 auto 20px;
+        border-radius: 50%;
+        background: white;
+        border: 1px solid #dddafc;
+        color: var(--tf-primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 850;
+        box-shadow: 0 8px 20px rgba(91,79,245,.08);
+    }
+
+    .tf-step h3 {
+        font-size: 18px;
+        margin-bottom: 8px;
+    }
+
+    .tf-step p {
+        color: var(--tf-muted);
+        font-size: 14px;
+        line-height: 1.6;
+        max-width: 280px;
+        margin: auto;
+    }
+
+    /* =========================
+       CTA
+    ========================= */
+
+    .tf-cta {
+        padding: 90px 6%;
+        background:
+            radial-gradient(circle at 20% 30%, rgba(139,92,246,.3), transparent 30%),
+            radial-gradient(circle at 80% 70%, rgba(59,130,246,.25), transparent 30%),
+            #27278c;
+        color: white;
+        text-align: center;
+    }
+
+    .tf-cta-container {
+        max-width: 750px;
+        margin: auto;
+    }
+
+    .tf-cta h2 {
+        font-size: clamp(2.3rem,4vw,3.5rem);
+        letter-spacing: -.045em;
+        margin: 0 0 16px;
+    }
+
+    .tf-cta p {
+        color: #aeb2c7;
+        line-height: 1.7;
+        margin-bottom: 30px;
+    }
+
+    /* =========================
+       FOOTER
+    ========================= */
+
+    .tf-footer {
+        padding: 28px 6%;
+        background: #0f1020;
+        color: #858ba3;
+        font-size: 13px;
+    }
+
+    .tf-footer-inner {
+        max-width: 1180px;
+        margin: auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .tf-footer-brand {
+        color: white;
+        font-weight: 850;
+        font-size: 17px;
+    }
+
+    /* =========================
+       RESPONSIVE
+    ========================= */
+
+    @media (max-width: 950px) {
+        .tf-hero-container {
+            grid-template-columns: 1fr;
+            gap: 55px;
+        }
+
+        .tf-hero {
+            padding-top: 70px;
+            padding-bottom: 100px;
+        }
+
+        .tf-hero-content {
+            text-align: center;
+        }
+
+        .tf-hero-description {
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .tf-actions,
+        .tf-trust {
+            justify-content: center;
+        }
+
+        .tf-preview {
+            max-width: 650px;
+            margin: auto;
+        }
+
+        .tf-feature-grid,
+        .tf-steps {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .tf-hero {
+            padding: 60px 20px 85px;
+        }
+
+        .tf-hero h1 {
+            font-size: 3rem;
+        }
+
+        .tf-hero-description {
+            font-size: 16px;
+        }
+
+        .tf-preview {
+            padding: 11px;
+        }
+
+        .tf-dashboard {
+            padding: 14px;
+        }
+
+        .tf-floating-card {
+            right: 5px;
+            bottom: -25px;
+        }
+
+        .tf-stat-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .tf-section {
+            padding: 70px 20px;
+        }
+
+        .tf-cta {
+            padding: 70px 20px;
+        }
+
+        .tf-footer-inner {
+            flex-direction: column;
+            text-align: center;
+        }
+    }
+</style>
+
+
+<div class="tf-landing">
+
+    <!-- =========================
+         HERO
+    ========================== -->
+
+    <section class="tf-hero">
+
+        <div class="tf-hero-container">
+
+            <div class="tf-hero-content">
+
+                <div class="tf-badge">
+                    <span class="tf-badge-dot"></span>
+                    Modern Online Testing Platform
+                </div>
+
+                <h1>
+                    Test smarter.<br>
+                    <span class="tf-gradient-text">Perform better.</span>
+                </h1>
+
+                <p class="tf-hero-description">
+                    A modern online testing platform built for students and educators.
+                    Take timed assessments, get instant results, and understand your
+                    performance with detailed analytics.
+                </p>
+
+                <div class="tf-actions">
+
+                    {% if not user.is_authenticated %}
+
+                        <a href="{% url 'register' %}"
+                           class="tf-btn tf-btn-primary">
+                            Create Free Account
+                            <span>→</span>
+                        </a>
+
+                        <a href="{% url 'login' %}"
+                           class="tf-btn tf-btn-secondary">
+                            Sign In
+                        </a>
+
+                    {% else %}
+
+                        <a href="{% url 'dashboard' %}"
+                           class="tf-btn tf-btn-primary">
+                            Go to Dashboard
+                            <span>→</span>
+                        </a>
+
+                    {% endif %}
+
+                </div>
+
+                <div class="tf-trust">
+                    <span>
+                        <span class="tf-check">✓</span>
+                        Timed assessments
+                    </span>
+
+                    <span>
+                        <span class="tf-check">✓</span>
+                        Instant results
+                    </span>
+
+                    <span>
+                        <span class="tf-check">✓</span>
+                        Performance tracking
+                    </span>
+                </div>
+
+            </div>
+
+
+            <!-- PRODUCT PREVIEW -->
+
+            <div class="tf-preview-wrapper">
+
+                <div class="tf-preview-glow"></div>
+
+                <div class="tf-preview">
+
+                    <div class="tf-window-bar">
+                        <span class="tf-window-dot"></span>
+                        <span class="tf-window-dot"></span>
+                        <span class="tf-window-dot"></span>
+                    </div>
+
+                    <div class="tf-dashboard">
+
+                        <div class="tf-dash-top">
+                            <div class="tf-mini-brand">
+                                TestFlow
+                            </div>
+
+                            <div class="tf-avatar">
+                                S
+                            </div>
+                        </div>
+
+                        <div class="tf-welcome">
+                            <strong>Welcome back, student! 👋</strong>
+                            <span>Track your progress and keep improving.</span>
+                        </div>
+
+                        <div class="tf-stat-grid">
+
+                            <div class="tf-stat">
+                                <small>TESTS</small>
+                                <strong>12</strong>
+                            </div>
+
+                            <div class="tf-stat">
+                                <small>AVG. SCORE</small>
+                                <strong>86%</strong>
+                            </div>
+
+                            <div class="tf-stat">
+                                <small>ACCURACY</small>
+                                <strong>91%</strong>
+                            </div>
+
+                        </div>
+
+                        <div class="tf-test-card">
+
+                            <div class="tf-test-head">
+                                <strong>Latest Performance</strong>
+                                <span class="tf-pill">Progress</span>
+                            </div>
+
+                            <div class="tf-progress">
+                                <span></span>
+                            </div>
+
+                            <div class="tf-test-meta">
+                                <span>Overall progress</span>
+                                <strong>78%</strong>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="tf-floating-card">
+
+                    <div class="tf-floating-icon">✓</div>
+
+                    <div>
+                        <strong>Test completed</strong>
+                        <span>Result generated instantly</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         FEATURES
+    ========================== -->
+
+    <section class="tf-section">
+
+        <div class="tf-section-container">
+
+            <div class="tf-section-heading">
+
+                <div class="tf-eyebrow">
+                    Built for better testing
+                </div>
+
+                <h2>
+                    Everything you need to test with confidence.
+                </h2>
+
+                <p>
+                    From timed assessments to detailed performance reports,
+                    TestFlow keeps the entire testing experience simple and focused.
+                </p>
+
+            </div>
+
+
+            <div class="tf-feature-grid">
+
+                <div class="tf-feature">
+
+                    <div class="tf-feature-icon">
+                        ⏱
+                    </div>
+
+                    <h3>Timed Assessments</h3>
+
+                    <p>
+                        Take structured tests with server-validated timers,
+                        question navigation, and automatic submission.
+                    </p>
+
+                </div>
+
+
+                <div class="tf-feature">
+
+                    <div class="tf-feature-icon">
+                        ↗
+                    </div>
+
+                    <h3>Instant Results</h3>
+
+                    <p>
+                        Get your score, accuracy, correct answers, wrong answers,
+                        and detailed question review immediately after submission.
+                    </p>
+
+                </div>
+
+
+                <div class="tf-feature">
+
+                    <div class="tf-feature-icon">
+                        ◈
+                    </div>
+
+                    <h3>Performance Insights</h3>
+
+                    <p>
+                        Track your attempts, scores, subject performance,
+                        and progress over time using your actual test data.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         HOW IT WORKS
+    ========================== -->
+
+    <section class="tf-section tf-how">
+
+        <div class="tf-section-container">
+
+            <div class="tf-section-heading">
+
+                <div class="tf-eyebrow">
+                    Simple workflow
+                </div>
+
+                <h2>
+                    From test to insight in three steps.
+                </h2>
+
+            </div>
+
+
+            <div class="tf-steps">
+
+                <div class="tf-step">
+
+                    <div class="tf-step-number">
+                        01
+                    </div>
+
+                    <h3>Choose a Test</h3>
+
+                    <p>
+                        Explore available assessments and choose the test
+                        that matches your subject or goal.
+                    </p>
+
+                </div>
+
+
+                <div class="tf-step">
+
+                    <div class="tf-step-number">
+                        02
+                    </div>
+
+                    <h3>Take the Assessment</h3>
+
+                    <p>
+                        Answer MCQ questions, manage your time, and submit
+                        your test when you're ready.
+                    </p>
+
+                </div>
+
+
+                <div class="tf-step">
+
+                    <div class="tf-step-number">
+                        03
+                    </div>
+
+                    <h3>Understand Your Result</h3>
+
+                    <p>
+                        Review your score, answers, accuracy, and performance
+                        to identify where you can improve.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         CTA
+    ========================== -->
+
+    <section class="tf-cta">
+
+        <div class="tf-cta-container">
+
+            <h2>
+                Ready to put your knowledge to the test?
+            </h2>
+
+            <p>
+                Create your account and start exploring assessments
+                designed to help you learn, practice, and improve.
+            </p>
+
+            {% if not user.is_authenticated %}
+
+                <a href="{% url 'register' %}"
+                   class="tf-btn tf-btn-primary"
+                   style="background:white;color:#5146e5;box-shadow:none;">
+                    Get Started
+                    <span>→</span>
+                </a>
+
+            {% else %}
+
+                <a href="{% url 'dashboard' %}"
+                   class="tf-btn tf-btn-primary"
+                   style="background:white;color:#5146e5;box-shadow:none;">
+                    Open Dashboard
+                    <span>→</span>
+                </a>
+
+            {% endif %}
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         FOOTER
+    ========================== -->
+
+    <footer class="tf-footer">
+
+        <div class="tf-footer-inner">
+
+            <div class="tf-footer-brand">
+                TestFlow
+            </div>
+
+            <div>
+                © {% now "Y" %} TestFlow. Built for smarter online testing.
+            </div>
+
+        </div>
+
+    </footer>
+
+</div>
+
+{% endblock %}

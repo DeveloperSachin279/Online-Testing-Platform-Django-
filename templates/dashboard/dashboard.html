@@ -1,0 +1,276 @@
+{% extends "base.html" %}
+{% block title %}Dashboard | TestFlow{% endblock %}
+{% block content %}
+<!-- Professional Header -->
+<div class="dashboard-header" style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border-radius: 20px; padding: 2.5rem 3rem; color: white; margin-bottom: 2.5rem; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1); position: relative; overflow: hidden;">
+    <!-- Abstract shapes for flair -->
+    <div style="position: absolute; right: -50px; top: -50px; width: 250px; height: 250px; background: rgba(79, 70, 229, 0.3); filter: blur(50px); border-radius: 50%;"></div>
+    <div style="position: absolute; left: 10%; bottom: -100px; width: 200px; height: 200px; background: rgba(14, 165, 233, 0.2); filter: blur(60px); border-radius: 50%;"></div>
+    
+    <div style="position: relative; z-index: 1;">
+        <h1 style="font-size: 2.25rem; font-weight: 800; margin-bottom: 0.5rem; letter-spacing: -0.02em;">Welcome back, {{ request.user.get_full_name|default:request.user.username }}!</h1>
+        <p style="color: #94a3b8; font-size: 1.1rem; font-weight: 500;">Here's a quick overview of your testing progress and insights.</p>
+    </div>
+</div>
+
+<div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; margin-bottom: 2.5rem;">
+    <!-- Stat 1 -->
+    <div class="card" style="display:flex; align-items:center; gap:1.5rem; padding: 1.75rem; border-radius: 20px; border: 1px solid rgba(0,0,0,0.05); transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='var(--shadow-md)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='var(--shadow)';">
+        <div style="width: 56px; height: 56px; border-radius: 16px; background: var(--primary-light); color: var(--primary); display:flex; align-items:center; justify-content:center; box-shadow: inset 0 2px 4px rgba(255,255,255,0.5);">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+        </div>
+        <div>
+            <div style="font-size:0.85rem; color:var(--text-muted); font-weight:700; text-transform:uppercase; letter-spacing:0.05em; margin-bottom: 0.25rem;">Completed</div>
+            <div style="font-size:2rem; font-weight:800; color:var(--text-main); line-height:1;">{{ tests_completed }}</div>
+        </div>
+    </div>
+    
+    <!-- Stat 2 -->
+    <div class="card" style="display:flex; align-items:center; gap:1.5rem; padding: 1.75rem; border-radius: 20px; border: 1px solid rgba(0,0,0,0.05); transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='var(--shadow-md)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='var(--shadow)';">
+        <div style="width: 56px; height: 56px; border-radius: 16px; background: #e0f2fe; color: #0284c7; display:flex; align-items:center; justify-content:center; box-shadow: inset 0 2px 4px rgba(255,255,255,0.5);">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+        </div>
+        <div>
+            <div style="font-size:0.85rem; color:var(--text-muted); font-weight:700; text-transform:uppercase; letter-spacing:0.05em; margin-bottom: 0.25rem;">Avg Score</div>
+            <div style="font-size:2rem; font-weight:800; color:var(--text-main); line-height:1;">{{ avg_score }}%</div>
+        </div>
+    </div>
+
+    <!-- Stat 3 -->
+    <div class="card" style="display:flex; align-items:center; gap:1.5rem; padding: 1.75rem; border-radius: 20px; border: 1px solid rgba(0,0,0,0.05); transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='var(--shadow-md)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='var(--shadow)';">
+        <div style="width: 56px; height: 56px; border-radius: 16px; background: #fef3c7; color: #d97706; display:flex; align-items:center; justify-content:center; box-shadow: inset 0 2px 4px rgba(255,255,255,0.5);">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+        </div>
+        <div>
+            <div style="font-size:0.85rem; color:var(--text-muted); font-weight:700; text-transform:uppercase; letter-spacing:0.05em; margin-bottom: 0.25rem;">Best Score</div>
+            <div style="font-size:2rem; font-weight:800; color:var(--text-main); line-height:1;">{{ best_score }}%</div>
+        </div>
+    </div>
+
+    <!-- Stat 4 -->
+    <div class="card" style="display:flex; align-items:center; gap:1.5rem; padding: 1.75rem; border-radius: 20px; border: 1px solid rgba(0,0,0,0.05); transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='var(--shadow-md)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='var(--shadow)';">
+        <div style="width: 56px; height: 56px; border-radius: 16px; background: #ecfdf5; color: #059669; display:flex; align-items:center; justify-content:center; box-shadow: inset 0 2px 4px rgba(255,255,255,0.5);">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><path d="M16 12l-4-4-4 4"></path><path d="M12 16V8"></path></svg>
+        </div>
+        <div>
+            <div style="font-size:0.85rem; color:var(--text-muted); font-weight:700; text-transform:uppercase; letter-spacing:0.05em; margin-bottom: 0.25rem;">Accuracy</div>
+            <div style="font-size:2rem; font-weight:800; color:var(--text-main); line-height:1;">{{ accuracy }}%</div>
+        </div>
+    </div>
+</div>
+
+<div class="content-grid" style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; margin-bottom: 2.5rem;">
+    <!-- Recent Activity -->
+    <div class="card" style="padding:0; border-radius: 20px; overflow: hidden; display: flex; flex-direction: column;">
+        <div style="padding: 1.75rem 2rem; border-bottom: 1px solid var(--border); display:flex; justify-content:space-between; align-items:center; background: #f8fafc;">
+            <h3 style="font-size: 1.25rem; font-weight: 800; margin: 0; color: var(--text-main);">Recent Activity</h3>
+            <a href="{% url 'results' %}" class="btn btn-outline" style="padding: 0.4rem 1.25rem; border-radius: 50px; font-size: 0.85rem;">View All</a>
+        </div>
+        <div style="flex: 1; display: flex; flex-direction: column;">
+        {% if recent_activity %}
+            {% for attempt in recent_activity %}
+            <a href="{% url 'detailed_result' attempt.id %}" style="display:flex; justify-content:space-between; align-items:center; padding:1.5rem 2rem; border-bottom:1px solid var(--border); transition: background 0.2s;" onmouseover="this.style.backgroundColor='var(--surface-hover)'" onmouseout="this.style.backgroundColor='transparent'">
+                <div style="display:flex; align-items:center; gap:1.25rem;">
+                    <div style="width:48px; height:48px; border-radius:12px; background:var(--background); display:flex; align-items:center; justify-content:center; color:var(--text-muted); border: 1px solid var(--border);">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+                    </div>
+                    <div>
+                        <div style="font-weight:700; color:var(--text-main); font-size:1.1rem; margin-bottom: 0.25rem;">{{ attempt.exam.title }}</div>
+                        <div style="font-size:0.85rem; color:var(--text-muted); font-weight:500;">{{ attempt.submitted_at|date:"M d, Y • h:i A" }}</div>
+                    </div>
+                </div>
+                <div style="text-align:right; display: flex; flex-direction: column; align-items: flex-end; gap: 0.35rem;">
+                    {% if attempt.is_passed %}
+                        <div style="font-weight:800; font-size:1.25rem; color:var(--success);">{{ attempt.percentage|floatformat:"0" }}%</div>
+                        <span style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; padding: 0.25rem 0.6rem; border-radius: 6px; background: #ecfdf5; color: var(--success); letter-spacing: 0.05em;">Passed</span>
+                    {% else %}
+                        <div style="font-weight:800; font-size:1.25rem; color:var(--danger);">{{ attempt.percentage|floatformat:"0" }}%</div>
+                        <span style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; padding: 0.25rem 0.6rem; border-radius: 6px; background: #fef2f2; color: var(--danger); letter-spacing: 0.05em;">Failed</span>
+                    {% endif %}
+                </div>
+            </a>
+            {% endfor %}
+        {% else %}
+            <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 5rem 2rem; text-align: center;">
+                <div style="width: 80px; height: 80px; background: var(--background); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; color: #cbd5e1;">
+                    <!-- Fixed SVG to prevent enormous sizing issue -->
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                </div>
+                <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.5rem;">No activity yet</h3>
+                <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.5rem; max-width: 250px;">Start taking tests to see your activity, scores, and trends here.</p>
+                <a href="{% url 'tests' %}" class="btn btn-primary" style="border-radius: 50px; padding: 0.75rem 2rem; font-weight: 700;">Find Tests</a>
+            </div>
+        {% endif %}
+        </div>
+    </div>
+
+    <!-- Performance Insights -->
+    <div class="card" style="padding:0; border-radius: 20px; height:fit-content; overflow: hidden;">
+        <div style="padding: 1.75rem 2rem; border-bottom: 1px solid var(--border); background: #f8fafc;">
+            <h3 style="font-size: 1.25rem; font-weight: 800; margin: 0; color: var(--text-main);">Performance Insights</h3>
+        </div>
+        <div style="padding: 2rem;">
+            <ul style="list-style:none; display:flex; flex-direction:column; gap:1.25rem; margin: 0; padding: 0;">
+                {% for insight in insights %}
+                    <li style="display:flex; gap:1rem; align-items:flex-start; padding: 1.25rem; background: var(--surface-hover); border-radius: 12px; border: 1px solid var(--border);">
+                        <div style="min-width: 28px; height: 28px; border-radius: 8px; background: var(--primary-light); color: var(--primary); display:flex; align-items:center; justify-content:center; margin-top:2px;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        </div>
+                        <span style="font-size: 0.95rem; font-weight: 600; color: var(--text-main); line-height: 1.6;">{{ insight }}</span>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="content-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
+    <!-- Subject Performance -->
+    <div class="card" style="padding:0; overflow:hidden; border-radius: 20px;">
+        <div style="padding: 1.75rem 2rem; border-bottom: 1px solid var(--border); background: #f8fafc;">
+            <h3 style="font-size: 1.25rem; font-weight: 800; margin: 0; color: var(--text-main);">Subject Breakdown</h3>
+        </div>
+        {% if subject_stats %}
+            <table style="width:100%; border-collapse:collapse; text-align:left;">
+                <thead style="background: white; border-bottom: 2px solid var(--border);">
+                    <tr>
+                        <th style="padding: 1rem 2rem; font-size:0.75rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">Subject</th>
+                        <th style="padding: 1rem 2rem; font-size:0.75rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em; text-align: center;">Tests</th>
+                        <th style="padding: 1rem 2rem; font-size:0.75rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">Avg Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for stat in subject_stats %}
+                    <tr style="border-bottom:1px solid var(--border); transition: background 0.2s;" onmouseover="this.style.backgroundColor='var(--surface-hover)'" onmouseout="this.style.backgroundColor='transparent'">
+                        <td style="padding: 1.25rem 2rem; font-weight:700; color:var(--text-main);">{{ stat.name }}</td>
+                        <td style="padding: 1.25rem 2rem; font-weight:600; color:var(--text-muted); text-align: center;">{{ stat.count }}</td>
+                        <td style="padding: 1.25rem 2rem;">
+                            <div style="display:flex; align-items:center; gap:1rem;">
+                                <span style="font-weight:800; font-size: 1.1rem; width: 45px;">{{ stat.avg_score|floatformat:"0" }}%</span>
+                                <div style="flex:1; height:8px; background:var(--border); border-radius:4px; overflow:hidden;">
+                                    <div class="subject-score-bar" data-score="{{ stat.avg_score }}" style="height:100%; background: linear-gradient(90deg, var(--primary), var(--secondary)); border-radius:4px; width: 0%;"></div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div style="padding: 4rem 2rem; text-align:center; color:var(--text-muted);">
+                <div style="width: 64px; height: 64px; background: var(--background); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem auto; color: #cbd5e1;">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                </div>
+                <div style="font-weight: 600; font-size: 1rem;">No subject data available yet.</div>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Score Trend Chart -->
+    <div class="card" style="padding:0; border-radius: 20px; overflow: hidden;">
+        <div style="padding: 1.75rem 2rem; border-bottom: 1px solid var(--border); background: #f8fafc;">
+            <h3 style="font-size: 1.25rem; font-weight: 800; margin: 0; color: var(--text-main);">Score Trend</h3>
+        </div>
+        <div style="padding: 2rem; background: white;">
+        {% if trend_labels_json != '[]' and trend_labels_json != '[""]' %}
+            <canvas id="trendChart" style="width:100%; height:300px;"></canvas>
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const canvas = document.getElementById('trendChart');
+                    if(!canvas) return;
+                    const ctx = canvas.getContext('2d');
+                    
+                    const labels = JSON.parse('{{ trend_labels_json|escapejs }}');
+                    const data = JSON.parse('{{ trend_data_json|escapejs }}');
+                    
+                    if(data.length < 2) {
+                        ctx.font = '600 14px "Plus Jakarta Sans"';
+                        ctx.fillStyle = '#64748b';
+                        ctx.textAlign = 'center';
+                        ctx.fillText('Not enough data points yet.', canvas.width/2, canvas.height/2);
+                        return;
+                    }
+
+                    const width = canvas.width;
+                    const height = canvas.height;
+                    const padding = 40;
+                    
+                    // Draw axes
+                    ctx.beginPath();
+                    ctx.moveTo(padding, padding);
+                    ctx.lineTo(padding, height - padding);
+                    ctx.lineTo(width - padding, height - padding);
+                    ctx.strokeStyle = '#e2e8f0';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+
+                    // Draw line
+                    const maxVal = 100;
+                    const xStep = (width - 2 * padding) / (data.length - 1);
+                    
+                    // Fill gradient under line
+                    const gradient = ctx.createLinearGradient(0, padding, 0, height - padding);
+                    gradient.addColorStop(0, 'rgba(79, 70, 229, 0.2)');
+                    gradient.addColorStop(1, 'rgba(79, 70, 229, 0)');
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(padding, height - padding);
+                    data.forEach((val, index) => {
+                        const x = padding + index * xStep;
+                        const y = height - padding - (val / maxVal) * (height - 2 * padding);
+                        ctx.lineTo(x, y);
+                    });
+                    ctx.lineTo(padding + (data.length - 1) * xStep, height - padding);
+                    ctx.closePath();
+                    ctx.fillStyle = gradient;
+                    ctx.fill();
+
+                    // Draw line
+                    ctx.beginPath();
+                    data.forEach((val, index) => {
+                        const x = padding + index * xStep;
+                        const y = height - padding - (val / maxVal) * (height - 2 * padding);
+                        if (index === 0) ctx.moveTo(x, y);
+                        else ctx.lineTo(x, y);
+                    });
+                    ctx.strokeStyle = '#4f46e5';
+                    ctx.lineWidth = 4;
+                    ctx.lineJoin = 'round';
+                    ctx.stroke();
+                    
+                    // Draw points
+                    data.forEach((val, index) => {
+                        const x = padding + index * xStep;
+                        const y = height - padding - (val / maxVal) * (height - 2 * padding);
+                        
+                        ctx.beginPath();
+                        ctx.arc(x, y, 6, 0, 2 * Math.PI);
+                        ctx.fillStyle = '#ffffff';
+                        ctx.fill();
+                        ctx.lineWidth = 3;
+                        ctx.strokeStyle = '#4f46e5';
+                        ctx.stroke();
+                    });
+                });
+            </script>
+        {% else %}
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 4.5rem 0;">
+                <div style="width: 64px; height: 64px; background: var(--background); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem auto; color: #cbd5e1;">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                </div>
+                <div style="color:var(--text-muted); font-weight:600; font-size: 1rem;">Take more tests to generate a trend graph.</div>
+            </div>
+        {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+    // Set widths dynamically to avoid IDE CSS linter errors with Django template tags
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.subject-score-bar').forEach(bar => {
+            bar.style.width = bar.dataset.score + '%';
+        });
+    });
+</script>
+{% endblock %}

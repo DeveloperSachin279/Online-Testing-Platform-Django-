@@ -1,0 +1,29 @@
+{% extends "admin_panel/admin_base.html" %}
+{% block title %}Confirm Delete{% endblock %}
+{% block content %}
+<a href="#" onclick="history.back(); return false;" style="display:inline-flex; align-items:center; gap:0.5rem; margin-bottom:1.5rem; color:var(--text-muted); font-size:0.95rem; font-weight:600; text-decoration:none; transition:var(--transition);" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-muted)'">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+    Go Back
+</a>
+
+<div class="card" style="max-width:500px; margin:2rem auto; text-align:center; padding:3rem 2rem; border-top:4px solid var(--danger); box-shadow:var(--shadow-lg);">
+    <div style="width:72px; height:72px; background:#fef2f2; color:var(--danger); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 1.5rem auto;">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+    </div>
+    
+    <h2 style="font-size:1.75rem; font-weight:800; color:var(--text-main); margin-bottom:1rem;">Are you sure?</h2>
+    
+    <p style="color:var(--text-muted); font-size:1.05rem; margin-bottom:2rem; line-height:1.6;">
+        You are about to delete <strong>{{ object }}</strong>.<br>
+        This action cannot be undone and will permanently remove this data.
+    </p>
+    
+    <form method="post">
+        {% csrf_token %}
+        <div style="display:flex; justify-content:center; gap:1rem;">
+            <button type="button" onclick="history.back()" class="btn btn-outline" style="padding:0.75rem 1.5rem; min-width:120px;">Cancel</button>
+            <button type="submit" class="btn" style="padding:0.75rem 1.5rem; min-width:120px; background:var(--danger); color:white; border:none; box-shadow:0 4px 14px rgba(220,38,38,0.3);">Yes, Delete</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
